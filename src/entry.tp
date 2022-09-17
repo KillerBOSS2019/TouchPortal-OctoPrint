@@ -1,0 +1,105 @@
+{
+    "sdk": 6,
+    "version": 1000,
+    "name": "TouchPortal OctoPrint",
+    "id": "com.github.killerboss2019.TPPlugins.OctoPrint",
+    "configureation": {
+        "colorDark": "",
+        "colorLight": ""
+    },
+    "settings": [
+        {
+          "name": "Hosts",
+          "type": "text",
+          "default": "",
+          "doc": "List of octoprint url to octoprint separated by comma.",
+          "readOnly": false
+        },
+        {
+          "name": "API Keys",
+          "type": "text",
+          "default": "",
+          "doc": "List of API Keys in same order as Hosts separated by comma.",
+          "readOnly": false
+        }
+    ],
+    "categories": [
+        {
+            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.main",
+            "name": "TouchPortal OctoPrint",
+            "imagepath": "",
+            "actions": [
+                {
+                    "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs",
+                    "name": "Print Job control",
+                    "prefix": "TouchPortal OctoPrint",
+                    "type": "communicate",
+                    "format": "Printer{$com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs.printerchoices$}{$com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs.jobchoices$} print job",
+                    "tryInline": true,
+                    "doc": "Ability to Start, cancel, restart, pause, resume, togglePause. with selected printer.",
+                    "data": [
+                        {
+                            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs.printerchoices",
+                            "type": "choices",
+                            "label": "printer choices",
+                            "default": "",
+                            "valueChoices": []
+                        },
+                        {
+                            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs.jobchoices",
+                            "type": "choices",
+                            "label": "print Job choices",
+                            "default": "Start",
+                            "valueChoices": [
+                                "Start",
+                                "Cancel",
+                                "Restart",
+                                "Pause",
+                                "Resume",
+                                "TogglePause"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.homeaxes",
+                    "name": "Home axes",
+                    "prefix": "TouchPortal OctoPrint",
+                    "type": "communicate",
+                    "format": "{$com.github.killerboss2019.TPPlugins.OctoPrint.act.homeaxes.printerchoices$} Home{$com.github.killerboss2019.TPPlugins.OctoPrint.act.homeaxes.axes$}axes",
+                    "tryInline": true,
+                    "doc": "Ability to home individual or all axes.",
+                    "data": [
+                        {
+                            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.homeaxes.printerchoices",
+                            "type": "choices",
+                            "label": "printer choices",
+                            "default": "",
+                            "valueChoices": []
+                        },
+                        {
+                            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.homeaxes.axes",
+                            "type": "choices",
+                            "label": "printer choices",
+                            "default": "All",
+                            "valueChoices": [
+                                "All",
+                                "X",
+                                "Y",
+                                "Z"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "states": [
+                {
+                    "id": "com.github.killerboss2019.TPPlugins.OctoPrint.st.totalPrinter",
+                    "type": "text",
+                    "desc": "Total 3D printer",
+                    "default": "0"
+                }
+            ]
+        }
+    ]
+}
