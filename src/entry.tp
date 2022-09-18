@@ -3,24 +3,24 @@
     "version": 1000,
     "name": "TouchPortal OctoPrint",
     "id": "com.github.killerboss2019.TPPlugins.OctoPrint",
-    "configureation": {
-        "colorDark": "",
-        "colorLight": ""
+    "configuration": {
+        "colorDark": "#468847",
+        "colorLight": "#1c9908"
     },
     "settings": [
         {
-          "name": "Hosts",
-          "type": "text",
-          "default": "",
-          "doc": "List of octoprint url to octoprint separated by comma.",
-          "readOnly": false
+            "name": "Hosts",
+            "type": "text",
+            "default": "",
+            "doc": "List of octoprint url to octoprint separated by comma.",
+            "readOnly": false
         },
         {
-          "name": "API Keys",
-          "type": "text",
-          "default": "",
-          "doc": "List of API Keys in same order as Hosts separated by comma.",
-          "readOnly": false
+            "name": "API Keys",
+            "type": "text",
+            "default": "",
+            "doc": "List of API Keys in same order as Hosts separated by comma.",
+            "readOnly": false
         }
     ],
     "categories": [
@@ -36,18 +36,18 @@
                     "type": "communicate",
                     "format": "Printer{$com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs.printerchoices$}{$com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs.jobchoices$} print job",
                     "tryInline": true,
-                    "doc": "Ability to Start, cancel, restart, pause, resume, togglePause. with selected printer.",
+                    "doc": "Ability to select a printer and Start, Cancel, Restart, Pause, Resume and TogglePause prints.",
                     "data": [
                         {
                             "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs.printerchoices",
-                            "type": "choices",
+                            "type": "choice",
                             "label": "printer choices",
                             "default": "",
                             "valueChoices": []
                         },
                         {
                             "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs.jobchoices",
-                            "type": "choices",
+                            "type": "choice",
                             "label": "print Job choices",
                             "default": "Start",
                             "valueChoices": [
@@ -68,18 +68,18 @@
                     "type": "communicate",
                     "format": "{$com.github.killerboss2019.TPPlugins.OctoPrint.act.homeaxes.printerchoices$} Home{$com.github.killerboss2019.TPPlugins.OctoPrint.act.homeaxes.axes$}axes",
                     "tryInline": true,
-                    "doc": "Ability to home individual or all axes.",
+                    "doc": "Home selected printer X, Y, Z or All axes",
                     "data": [
                         {
                             "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.homeaxes.printerchoices",
-                            "type": "choices",
+                            "type": "choice",
                             "label": "printer choices",
                             "default": "",
                             "valueChoices": []
                         },
                         {
                             "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.homeaxes.axes",
-                            "type": "choices",
+                            "type": "choice",
                             "label": "printer choices",
                             "default": "All",
                             "valueChoices": [
@@ -90,15 +90,68 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.moveaxes",
+                    "name": "Moving axes",
+                    "prefix": "TouchPortal OctoPrint",
+                    "type": "communicate",
+                    "format": "Move{$com.github.killerboss2019.TPPlugins.OctoPrint.act.moveaxes.printerchoices$}{$com.github.killerboss2019.TPPlugins.OctoPrint.act.moveaxes.axes$}by{$com.github.killerboss2019.TPPlugins.OctoPrint.act.moveaxes.distances$}mm",
+                    "tryInline": true,
+                    "doc": "Moving selected printer axes by X mm",
+                    "data": [
+                        {
+                            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.moveaxes.printerchoices",
+                            "type": "choice",
+                            "label": "printer choices",
+                            "default": "",
+                            "valueChoices": []
+                        },
+                        {
+                            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.moveaxes.axes",
+                            "type": "choice",
+                            "label": "axes",
+                            "default": "X",
+                            "valueChoices": [
+                                "X",
+                                "Y",
+                                "Z"
+                            ]
+                        },
+                        {
+                            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.moveaxes.distances",
+                            "type": "text",
+                            "label": "axes",
+                            "default": "1"
+                        }
+                    ]
+                },
+                {
+                    "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.temperature",
+                    "name": "Set target temperature",
+                    "prefix": "TouchPortal OctoPrint",
+                    "type": "communicate",
+                    "format": "{$com.github.killerboss2019.TPPlugins.OctoPrint.act.temperature.printerchoices$}Set target temperature to{$com.github.killerboss2019.TPPlugins.OctoPrint.act.temperature.targetTemp$}°C",
+                    "tryInline": true,
+                    "doc": "Change selected printer bed or nozzle temperature.",
+                    "data": [
+                        {
+                            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.temperature.printerchoices",
+                            "type": "choice",
+                            "label": "printer choices",
+                            "default": "",
+                            "valueChoices": []
+                        },
+                        {
+                            "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.temperature.targetTemp",
+                            "type": "text",
+                            "label": "printer choices",
+                            "default": ""
+                        }
+                    ]
                 }
             ],
             "states": [
-                {
-                    "id": "com.github.killerboss2019.TPPlugins.OctoPrint.st.totalPrinter",
-                    "type": "text",
-                    "desc": "Total 3D printer",
-                    "default": "0"
-                }
             ]
         }
     ]

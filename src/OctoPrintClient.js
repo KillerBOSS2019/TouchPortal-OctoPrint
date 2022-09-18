@@ -24,7 +24,7 @@ class OctoPrintClient extends EventEmitter{
                 }
             }
             if (body) {
-                options.body = body;
+                options.data = body;
             }
         })
     }
@@ -33,14 +33,14 @@ class OctoPrintClient extends EventEmitter{
         return new Promise((resolve, reject) => {
             const options = {
                 headers: {
-                    Authorization: `Bearer ${this.api_key}`,
-                    'Content-Type': 'application/json',
+                    // 'Authorization': "Bearer " + this.api_key,
+                    'X-Api-Key': this.api_key,
+                    'Content-Type': 'application/json'
                 }
             }
             if (body) {
-                options.body = body;
+                // options.body = body;
             }
-
             switch (method) {
                 case "GET": {
                     axios
@@ -51,7 +51,7 @@ class OctoPrintClient extends EventEmitter{
                 }
                 case "POST": {
                     axios
-                      .post(this.host + endpoint, options)
+                      .post(this.host + endpoint, body, options)
                       .then(res => { resolve(res) })
                       .catch(error => { reject(error) })
                     break;
@@ -72,7 +72,7 @@ class OctoPrintClient extends EventEmitter{
           .then(res => res.data)
     }
 
-    connect() {
+    async connect() {
         this.ws = new WebSocket(this.ws_url)
         const parent = this;
 
@@ -118,24 +118,24 @@ class OctoPrintClient extends EventEmitter{
     }
 
     getCurrentUser() {
-        return this._octoRequest("GET", "/api/currentuser")
+        return this.#_octoRequest("GET", "/api/currentuser")
     }
 
     getVersion() {
-        return this._octoRequest("GET", "/api/version")
+        return this.#_octoRequest("GET", "/api/version")
     }
     
     getServer() {
-        return this._octoRequest("GET", "/api/version")
+        return this.#_octoRequest("GET", "/api/version")
     }
     
     getConnection() {
-        return this._octoRequest("GET", "/api/connection")
+        return this.#_octoRequest("GET", "/api/connection")
     }
     
     connection(command, port = null, baudrate = null, printerProfile = null, save = null, autoconnect = null) {
         // https://docs.octoprint.org/en/master/api/connection.html#id3
-        return this._octoRequest("POST", "/api/connection", {
+        return this.#_octoRequest("POST", "/api/connection", {
             port: port,
             baudrate: baudrate,
             printerProfile: printerProfile,
@@ -145,11 +145,11 @@ class OctoPrintClient extends EventEmitter{
     }
 
     getFiles(recursive=false) {
-        return this._octoRequest("GET", "/api/files?recursive=" + recursive)
+        return this.#_octoRequest("GET", "/api/files?recursive=" + recursive)
     }
 
     getJob() {
-        return this._octoRequest("GET", "/api/job")
+        return this.#_octoRequest("GET", "/api/job")
     }
 
     Job(command) {
@@ -160,10 +160,10 @@ class OctoPrintClient extends EventEmitter{
         `togglePause` is a custom one, It makes easier to understand what it is.
         */
         if (!(command in ["pause", "resume", "togglePause"])) 
-            return this._octoRequest("POST", "/api/job", body = { command: command })
+            return this.#_octoRequest("POST", "/api/job", body = { command: command })
         else {
             if (command === "togglePause") { command = "toggle" }
-            return this._octoRequest("POST", "/api/job", body = { command: "pause", action: command })
+            return this.#_octoRequest("POST", "/api/job", body = { command: "pause", action: command })
         }
     }
 
@@ -179,7 +179,7 @@ class OctoPrintClient extends EventEmitter{
         arg options *Required* It needs to be in format of dict more info here 
         https://docs.octoprint.org/en/master/api/printer.html#post--api-printer-printhead
         */
-        return this._octoRequest("POST", "/api/printer/printhead", body=options)
+        return this.#_octoRequest("POST", "/api/printer/printhead", options)
     }
 
     printTool(options) {
@@ -189,7 +189,7 @@ class OctoPrintClient extends EventEmitter{
         arg options *Required* It needs to be in format of dict more info here 
         https://docs.octoprint.org/en/master/api/printer.html#post--api-printer-tool
         */
-        return this._octoRequest("POST", "/api/printer/tool", body=options)
+        return this.#_octoRequest("POST", "/api/printer/tool", body=options)
     }
 
     getPrintTool(history=false, limit=2) {
@@ -197,27 +197,27 @@ class OctoPrintClient extends EventEmitter{
         Allows you to get current actual, target and offset data
         https://docs.octoprint.org/en/master/api/printer.html#get--api-printer-tool
         */
-        return this._octoRequest("GET", "/api/printer/tool?history="+history + "&limit=" + limit)
+        return this.#_octoRequest("GET", "/api/printer/tool?history="+history + "&limit=" + limit)
     }
 
     setPrintBed(command) {
-        return this._octoRequest("POST", "/api/printer/bed", body=command)
+        return this.#_octoRequest("POST", "/api/printer/bed", body=command)
     }
 
     getPrintBed(history=false, limit=2) {
-        return this._octoRequest("GET", "/api/printer/bed?history="+history + "&limit=" + limit)
+        return this.#_octoRequest("GET", "/api/printer/bed?history="+history + "&limit=" + limit)
     }
 
     setChamber(command) {
-        return this._octoRequest("POST", "/api/printer/chamber", body=command)
+        return this.#_octoRequest("POST", "/api/printer/chamber", body=command)
     }
     
     getChamber(history=false, limit=2) {
-        return this._octoRequest("GET", "/api/printer/chamber?history="+history + "&limit=" + limit)
+        return this.#_octoRequest("GET", "/api/printer/chamber?history="+history + "&limit=" + limit)
     }
 
     runGcode(gcode) {
-        return this._octoRequest("POST", "/api/printer/command", body={command: gcode})
+        return this.#_octoRequest("POST", "/api/printer/command", body={command: gcode})
     }
 }
 
