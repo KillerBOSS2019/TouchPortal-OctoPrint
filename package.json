@@ -3,16 +3,26 @@
   "version": "1.0.0",
   "description": "Octoprint is a TouchPortal Plugin that allows user to control their 3d printer using TouchPortal!",
   "main": "index.js",
+  "bin": {
+    "touchportal-octoprint": "src/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "pkg-win": "pkg --targets node14-win-x64 .",
-    "pkg-mac": "pkg --targets node14-macos-x64 ."
+    "pkg-mac": "pkg --targets node14-macos-x64 .",
+    "pkg-all": "node scripts/build.js"
   },
   "keywords": [
     "TouchPortalPlugin",
     "TouchPortal",
     "Octoprint"
   ],
+  "pkg": {
+    "scripts": [
+      "src/**/*.js",
+      "src/*.js"
+    ]
+  },
   "author": "DamienS",
   "license": "GPL-3.0",
   "dependencies": {
@@ -20,5 +30,9 @@
     "request": "^2.88.2",
     "touchportal-api": "^3.2.1",
     "ws": "^8.8.1"
+  },
+  "devDependencies": {
+    "adm-zip": "^0.5.10",
+    "pkg": "^5.8.0"
   }
 }
