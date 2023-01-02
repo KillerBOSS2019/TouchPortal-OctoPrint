@@ -76,7 +76,7 @@ async function updateState(parentName, tempInfo, current, snapshot, webcam_enabl
     const base_state_id = `${pluginId}.state.${parentName}.`
     const image = '';
     if( webcam_enabled ) {
-        await urlToBase64(snapshot);
+        image = await urlToBase64(snapshot);
     }
     if (!current.job.filament) {
         current.job.filament = { tool0: { length: null, target: null, offset: null, actual: null } }

@@ -1,6 +1,6 @@
 {
     "sdk": 6,
-    "version": 1001,
+    "version": 1000,
     "name": "TouchPortal OctoPrint",
     "id": "com.github.killerboss2019.TPPlugins.OctoPrint",
     "plugin_start_cmd_windows": "\"%TP_PLUGIN_FOLDER%touchportal-octoprint\\touchportal-octoprint.exe\"",
