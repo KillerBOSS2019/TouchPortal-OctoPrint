@@ -12,6 +12,7 @@ class OctoPrintClient extends EventEmitter{
         this.ws = null;
         this.printer_name = null;
         this.snapshot_url = null;
+        this.webcam_enabled = false;
         this.states = []
     }
 
@@ -91,6 +92,7 @@ class OctoPrintClient extends EventEmitter{
                 await this.#_octoRequest("GET", "/api/settings").then((reqdata) => {
                     parent.printer_name = reqdata.data.appearance.name
                     parent.snapshot_url = reqdata.data.webcam.snapshotUrl
+                    parent.webcam_enabled = reqdata.data.webcam.webcamEnabled
                 })
                 this.emit("connected", data)
             } else if (data.hasOwnProperty("history")){

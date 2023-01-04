@@ -1,6 +1,7 @@
 const TouchPortalAPI = require('touchportal-api');
 const fs = require("fs")
-const TouchPortalEntry = JSON.parse(fs.readFileSync("./src/entry.tp", "utf8"))
+const path = require("path")
+const TouchPortalEntry = JSON.parse(fs.readFileSync(path.join(__dirname, "/entry.tp"), "utf8"))
 const OctoPrintClient = require("./OctoPrintClient")
 const axios = require("axios");
 
@@ -59,7 +60,6 @@ function sec2time(timeInSeconds) {
 }
 
 function generateState(parentName) {
-    console.log(parentName + "from genState")
     const base_state_id = `${pluginId}.state.${parentName}.`
     let new_states = []
     states_templete.forEach((state) => {
@@ -72,9 +72,12 @@ function generateState(parentName) {
     return new_states
 }
 
-async function updateState(parentName, tempInfo, current, snapshot) {
+async function updateState(parentName, tempInfo, current, snapshot, webcam_enabled) {
     const base_state_id = `${pluginId}.state.${parentName}.`
-    const image = await urlToBase64(snapshot);
+    const image = '';
+    if( webcam_enabled ) {
+        image = await urlToBase64(snapshot);
+    }
     if (!current.job.filament) {
         current.job.filament = { tool0: { length: null, target: null, offset: null, actual: null } }
     }
@@ -106,19 +109,12 @@ async function updateState(parentName, tempInfo, current, snapshot) {
     states_templete.forEach((state) => {
         const state_index = states_templete.indexOf(state)
         TPClient.stateUpdate(base_state_id + state.id, value[state_index])
-        // console.log(`{
-        //     "id": "${pluginId}.state.dynamic.${state.id}",
-        //     "type": "text",
-        //     "desc": "${state.desc}",
-        //     "default": "${state.defaultValue}"
-        // },`)
     })
 }
 
 // After join to Touch Portal, it sends an info message
 // handle it here
 TPClient.on("Info", (data) => {
-    // const octopi = new OctoPrintClient("9CEEE24052024BEB9E55F3EF8C99BB59", "http://192.168.12.144:5002")
     const hosts = data.settings[0].Hosts.split(",");
     const api_keys = data.settings[1]["API Keys"].split(",")
 
@@ -140,7 +136,7 @@ TPClient.on("Info", (data) => {
 
     octoprint_instances.forEach(OP_instance => {
         OP_instance.on("connected", (data) => {
-            console.log(`Connected to ${OP_instance.printer_name}. Generating states`)
+            TPClient.logIt("DEBUG",`Connected to ${OP_instance.printer_name}. Generating states`)
             OP_instance.states = generateState(OP_instance.printer_name)
             octoprint_names.push(OP_instance.printer_name)
             TouchPortalEntry.categories[0].actions.forEach((entry_action) => {
@@ -151,22 +147,21 @@ TPClient.on("Info", (data) => {
             })
         })
         OP_instance.on("current", async (data) => {
-            //   console.log(data.current)
             await OP_instance.getPrinterState().then(async (temp) => {
                 await updateState(
                     OP_instance.printer_name,
                     temp.data.temperature,
                     data.current,
-                    OP_instance.snapshot_url
+                    OP_instance.snapshot_url,
+                    OP_instance.webcam_enabled
                 )
             }).catch((err) => {
-                console.log("connection losted")
+                TPClient.logIt("ERROR","There was an error :",err)
             })
         })
         OP_instance.on("error", (err) => {
-            console.log(err)
+            TPClient.logIt("ERROR","Instance detected an error:",err);
         })
-        console.log(OP_instance.ws_url)
         OP_instance.connect()
     })
 });
@@ -190,7 +185,7 @@ TPClient.on("Action", (data, hold) => {
     else if (!hold) {
         delete heldAction[data.actionId];
     }
-    // console.log(data)
+    
     octoprint_instances.forEach(async instance => {
         if (instance.printer_name === data.data[0].value) {
             if (data.actionId == entry_actions[2].id) {
@@ -218,7 +213,7 @@ TPClient.on("Action", (data, hold) => {
                 } else if (data.data[1].value === "All") { 
                     axesOptions.axes = ["x", "y", "z"]
                 }
-                // console.log(axesOptions)
+                
                 await instance.printHead(axesOptions)
             }
         }
@@ -227,10 +222,10 @@ TPClient.on("Action", (data, hold) => {
 
 TPClient.on("Close", (data) => {
     octoprint_instances.forEach((instance) => {
-        console.log(`Shutting down ${instance.printer_name}`)
+        TPClient.logIt("DEBUG",`Shutting down ${instance.printer_name}`)
         instance.close()
     })
 })
 
-//Connects and Pairs to Touch Portal via Sockete Socket
+//Connects and Pairs to Touch Portal via Socket
 TPClient.connect({ pluginId });

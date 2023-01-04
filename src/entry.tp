@@ -3,6 +3,8 @@
     "version": 1000,
     "name": "TouchPortal OctoPrint",
     "id": "com.github.killerboss2019.TPPlugins.OctoPrint",
+    "plugin_start_cmd_windows": "\"%TP_PLUGIN_FOLDER%touchportal-octoprint\\touchportal-octoprint.exe\"",
+    "plugin_start_cmd_mac": "sh %TP_PLUGIN_FOLDER%touchportal-octoprint/start_plugin.sh",
     "configuration": {
         "colorDark": "#468847",
         "colorLight": "#1c9908"
@@ -27,7 +29,7 @@
         {
             "id": "com.github.killerboss2019.TPPlugins.OctoPrint.main",
             "name": "TouchPortal OctoPrint",
-            "imagepath": "",
+            "imagepath": "%TP_PLUGIN_FOLDER%touchportal-octoprint/touchportal-octoprint.png",
             "actions": [
                 {
                     "id": "com.github.killerboss2019.TPPlugins.OctoPrint.act.jobs",
